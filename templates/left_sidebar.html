@@ -1,0 +1,20 @@
+        <div id="left_sidebar">
+            <div id="left_sidebar_box">
+                    <h1 id="left_sidebar_header">Tags</h1>
+                    {% for tag in g.Tag.query.all() %}
+                        <p id="left_sidebar_entry">{{ tag.name }}</p>
+                    {% endfor %}
+            </div>
+            <div id="left_sidebar_box">
+                <h1 id="left_sidebar_header">Tags</h1>
+                {% for tag in g.Tag.query.all() %}
+                    <p id="left_sidebar_entry">{{ tag.name }}</p>
+                {% endfor %}
+            </div>
+            <div id="left_sidebar_box">
+                <h1 id="left_sidebar_header">Tags</h1>
+                {% for tag in g.Tag.query.all() %}
+                    <p id="left_sidebar_entry">{{ tag.name }}</p>
+                {% endfor %}
+            </div>
+        </div>

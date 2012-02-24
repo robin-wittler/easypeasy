@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="de">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    {%- block head %}
+    {% block stylesheet %}<link rel="stylesheet" href="/static/base.css" />{% endblock %}
+    <title>{% block title %}{% endblock %}  :: Alsobs.de ::</title>
+    {%- endblock %}
+</head>
+<body id="body">
+    <div id="header">
+        {%- block header %}
+        <h1 id="header">Alsobs.de</h1>
+        {%- endblock %}
+    </div>
+    <div id="subheader">
+        {%- block subheader %}
+        <p id="subheader">Die tun nur so als ob!</p>
+        {%- endblock %}
+    </div>
+    <div id="content">
+        {%- block content %}
+        {% block left_sidebar %}
+        {% endblock %}
+        {%- endblock %}
+    </div>
+    <div id="footer">
+        {%- block footer %}
+        <p id="footer">&copy; Copyright 2012 by <a id="footer" href="https://alsobs.de/copyright">Alsobs.de</a>.</p>
+        {%- endblock %}
+    </div>
+</body>
+

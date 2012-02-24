@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% import "paginate.html" as paginator %}
+
+{% if g.title %}
+    {%- block title -%}
+    {{ g.title }}
+    {%- endblock -%}
+{% endif %}
+
+{%- block stylesheet -%}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/child.css" />
+{%- endblock %}
+
+
+
+{%- block content -%}
+{% block left_sidebar %}
+{% include "left_sidebar.html" %}
+{% endblock %}
+{%- for blog in g.paginate.items %}
+        <div id="blog">
+            <div id="blog_headline">
+                <h1 id="blog_headline">{{ blog.headline|e }}</h1>
+            </div>
+            <div id="blog_header">
+                <p id="blog_tags">Tags:&nbsp;
+                    {%- for tag in blog.tags %}
+                    <a id="blog_tags" href="/blog/by/tag/{{ tag|e }}/">{{ tag|e }}</a>
+                        {%- if tag != blog.tags|last -%}
+                            {%- if blog.tags_delim -%}
+                                {{ blog.tags_delim }}
+                            {%- else -%}
+                                ,&nbsp;
+                            {%- endif -%}
+                        {% endif -%}
+                    {% endfor -%}
+                </p>
+            </div>
+            <div id="blog_payload">
+                <span id="blog_payload">{{ blog.payload }}</span>
+            </div>
+            <div id="blog_footer">
+                <a id="blog_edit" href="/edit/{{ blog.name|e }}">edit</a>
+                <span id="blog_footer_delim">&nbsp;|&nbsp;</span>
+                <span id="blog_published_by">published by</span>
+                <span id="blog_username">{{ blog.username|e }}</span>
+                <span id="blog_published_by">at</span>
+                <span id="blog_creation_date">{{ blog.creation_date.strftime('%Y-%m-%d %H:%M:%S') }}</span>
+                {%- if blog.creation_date < blog.modified_date %}
+                <span id="blog_published_by">[updated at <span id="blog_modified_date">{{ blog.modified_date.strftime('%Y-%m-%d %H:%M:%S') }}</span>]</span>
+                {%- endif %}
+            </div>
+        </div>
+{%- endfor -%}
+{{ paginator.render_pagination(g.paginate, g.endpoint) }}
+{% endblock %}
+

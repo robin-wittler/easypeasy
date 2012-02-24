@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/login2.css" />
+</head>
+<title>Login to Alsobs.de</title>
+<body>
+    <div id="stylized" class="myform">
+        {% if error %}
+        <p><strong>Error:</strong> {{ error }}</p>
+        {% endif %}
+        <form id="myform" name="form" method="post" action="/login/">
+            <h1>Login to Alsobs.de</h1>
+            <p id="centered">Die tun nur so als ob!</p>
+            <label>Username</label>
+            {% if username %}
+            <input type="text" name="username" id="name" value="{{ username }}" />
+            {% else %}
+            <input type="text" name="username" id="name" />
+            {% endif %}
+            <label>Password</label>
+            <input type="password" name="password" id="password" />
+            <button type="submit">Login</button>
+            <div class="spacer"></div>
+        </form>
+    </div>
+</body>
+
