@@ -4,6 +4,7 @@
 __author__ = 'Robin Wittler'
 __contact__ = 'real@the-real.org'
 __version__ = '0.0.1'
+__license__ = 'GPL3'
 
 import werkzeug
 import blog
@@ -59,6 +60,7 @@ def getopts():
     parser.add_argument(
         'syncdb',
         action=SyncDB,
+        help='creates (sync) the db.'
     )
 
     args = parser.parse_args()
