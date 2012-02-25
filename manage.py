@@ -6,9 +6,10 @@ __contact__ = 'real@the-real.org'
 __version__ = '0.0.1'
 __license__ = 'GPL3'
 
-import werkzeug
 import blog
 import models
+import getpass
+import werkzeug
 import argparse
 import textwrap
 
@@ -17,10 +18,95 @@ env = werkzeug.create_environ('/blog', 'http://localhost:5000/')
 ctx = blog.app.request_context(env)
 # now we have a valid request context and are able to use flask-sqlalchemy
 
-class SyncDB(argparse.Action):
+class CreateDB(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         ctx.push()
         models.create_all()
+        ctx.pop()
+        parser.exit(0)
+
+class AddUser(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        firstpw = getpass.getpass(prompt='Enter Password for User %s: ' %(values))
+        secondpw = getpass.getpass(prompt='Repeat Password for User %s: ' %(values))
+        if not firstpw == secondpw:
+            print 'Password missmatch!'
+            parser.exit(1)
+
+        user = models.User(values, firstpw)
+        models.db.session.add(user)
+        models.db.session.commit()
+        ctx.pop()
+        parser.exit(0)
+
+class DelUser(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        user = models.User.query.filter_by(username=values).one()
+        models.db.session.delete(user)
+        models.db.session.commit()
+        ctx.pop()
+        parser.exit(0)
+
+class ShowUsers(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        print 'Users:'
+        print '------'
+        for user in models.User.query.all():
+            print '%r' %(user)
+        ctx.pop()
+        parser.exit(0)
+
+class AddGroup(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        group = models.Group(values)
+        models.db.session.add(group)
+        models.db.session.commit()
+        ctx.pop()
+        parser.exit(0)
+
+class DelGroup(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        group = models.Group.query.filter_by(name=values).one()
+        models.db.session.delete(group)
+        models.db.session.commit()
+        ctx.pop()
+        parser.exit(0)
+
+class ShowGroups(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        print 'Groups:'
+        print '-------'
+        for group in models.Group.query.all():
+            print '%r' %(group)
+        ctx.pop()
+        parser.exit(0)
+
+class AddUser2Group(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        user, group = values
+        user = models.User.query.filter_by(username=user).one()
+        user.addGroup(group)
+        models.db.session.add(user)
+        models.db.session.commit()
+        ctx.pop()
+        parser.exit(0)
+
+class DelUserFromGroup(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        ctx.push()
+        user, group = values
+        user = models.User.query.filter_by(username=user).one()
+        group = models.Group.query.filter_by(name=group).one()
+        user.groups.remove(group)
+        models.db.session.add(user)
+        models.db.session.commit()
         ctx.pop()
         parser.exit(0)
 
@@ -58,9 +144,68 @@ def getopts():
     )
 
     parser.add_argument(
-        'syncdb',
-        action=SyncDB,
-        help='creates (sync) the db.'
+        '--createdb',
+        nargs=0,
+        action=CreateDB,
+        help='initially creates the db.'
+    )
+
+    parser.add_argument(
+        '--adduser',
+        action=AddUser,
+        metavar='USER',
+        help='add a user to easypeasy.'
+    )
+
+    parser.add_argument(
+        '--deluser',
+        action=DelUser,
+        metavar='USER',
+        help='delete a easypeasy user.'
+    )
+
+    parser.add_argument(
+        '--listusers',
+        action=ShowUsers,
+        nargs=0,
+        help='list all easypeasy users.'
+    )
+
+    parser.add_argument(
+        '--addgroup',
+        action=AddGroup,
+        metavar='GROUP',
+        help='add a group to easypeasy.'
+    )
+
+    parser.add_argument(
+        '--delgroup',
+        action=DelGroup,
+        metavar='GROUP',
+        help='delete a easypeasy group.'
+    )
+
+    parser.add_argument(
+        '--listgroups',
+        nargs=0,
+        action=ShowGroups,
+        help='list all easypeasy groups.'
+    )
+
+    parser.add_argument(
+        '--adduser2group',
+        nargs=2,
+        action=AddUser2Group,
+        metavar=('USER', 'GROUP'),
+        help='add a user to a group.'
+    )
+
+    parser.add_argument(
+        '--remove-user-from-group',
+        nargs=2,
+        action=DelUserFromGroup,
+        metavar=('USER', 'GROUP'),
+        help='remove a user from a group'
     )
 
     args = parser.parse_args()
