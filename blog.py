@@ -89,8 +89,6 @@ def blog(year=None, month=None, day=None, page=None):
 
 
     query = query.paginate(page, per_page=max_per_page)
-    if not query.items:
-        return abort(404)
 
     if 'page' in request.path:
         endpoint = request.path.rsplit('/', 1)[0]

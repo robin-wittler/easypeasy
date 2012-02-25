@@ -11,16 +11,17 @@
 
 import config
 import calendar
+import textile
 import datetime
 import sqlalchemy
 from sqlalchemy.sql import cast
 from sqlalchemy.sql import extract
+from lxml.html.clean import Cleaner
 from flaskext.sqlalchemy import SQLAlchemy
-from werkzeug.security import generate_password_hash
-from werkzeug.security import check_password_hash
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.interfaces import PoolListener
-
+from werkzeug.security import check_password_hash
+from werkzeug.security import generate_password_hash
 
 # This enforce 'pragma foreign_keys=ON' for a db connect
 class SQLiteForeignKeysListener(PoolListener):
@@ -338,6 +339,7 @@ class BlogEntry(db.Model):
             self.modified_date = modified_date
 
         self.payload = payload
+        self.html_payload = self.sanitizeHtml(textile.textile(self.payload))
         self.username = username
 
         if headline is None:
@@ -350,6 +352,12 @@ class BlogEntry(db.Model):
                 self.addTag(tag)
         else:
             self.addTag('Untagged')
+
+
+    def changePayload(self, payload):
+        self.payload = payload
+        self.html_payload = self.sanitizeHtml(textile.textile(self.payload))
+        return True
 
     def __repr__(self):
         return (
@@ -368,6 +376,10 @@ class BlogEntry(db.Model):
 
     def __str__(self):
         return self.name
+
+    def sanitizeHtml(self, html):
+        cleaner = Cleaner(links=False)
+        return cleaner.clean_html(html)
 
     def addTag(self, name):
         try:

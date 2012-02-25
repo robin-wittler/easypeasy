@@ -6,6 +6,8 @@ __contact__ = 'real@the-real.org'
 __version__ = '0.0.1'
 __license__ = 'GPL3'
 
+import re
+import sys
 import blog
 import models
 import getpass
@@ -16,6 +18,8 @@ import textwrap
 
 env = werkzeug.create_environ('/blog', 'http://localhost:5000/')
 ctx = blog.app.request_context(env)
+
+tag_splitter = re.compile('\s*,\s*')
 # now we have a valid request context and are able to use flask-sqlalchemy
 
 class CreateDB(argparse.Action):
@@ -106,6 +110,23 @@ class DelUserFromGroup(argparse.Action):
         group = models.Group.query.filter_by(name=group).one()
         user.groups.remove(group)
         models.db.session.add(user)
+        models.db.session.commit()
+        ctx.pop()
+        parser.exit(0)
+
+class AddEntry(argparse.Action):
+    def __call__(self, parser, namespace, values, option_string=None):
+        user, name, tags, content = values
+        if content == '-':
+            content = sys.stdin.read()
+
+        if not tags == 'NONE':
+            tags = tag_splitter.split(tags)
+        else:
+            tags = []
+        ctx.push()
+        entry = models.BlogEntry(name, content, user, tags=tags)
+        models.db.session.add(entry)
         models.db.session.commit()
         ctx.pop()
         parser.exit(0)
@@ -206,6 +227,19 @@ def getopts():
         action=DelUserFromGroup,
         metavar=('USER', 'GROUP'),
         help='remove a user from a group'
+    )
+
+    parser.add_argument(
+        '--addentry',
+        nargs=4,
+        metavar=('USER', 'NAME', 'TAGS', 'CONTENT'),
+        action=AddEntry,
+        help=(
+            'add a blogentry for a user. If content is \'-\' ' +
+            'then content will be taken from stdin. ' +
+            'Tags must be comma seperated - or (if untagged) Tags must ' +
+            'be the word NONE. (And remeber to quote if your tags include spaces).'
+        )
     )
 
     args = parser.parse_args()
