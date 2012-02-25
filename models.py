@@ -22,10 +22,13 @@ from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.interfaces import PoolListener
 
 
+# This enforce 'pragma foreign_keys=ON' for a db connect
 class SQLiteForeignKeysListener(PoolListener):
     def connect(self, dbapi_con, con_record):
         db_cursor = dbapi_con.execute('pragma foreign_keys=ON')
 
+
+# This enforce 'pragma foreign_keys=ON' for a sqlite db type
 class StrictSQLAlchemy(SQLAlchemy):
     def apply_driver_hacks(self, app, info, options):
         super(StrictSQLAlchemy, self).apply_driver_hacks(app, info, options)
@@ -163,6 +166,7 @@ class BlogEntry(db.Model):
             backref=db.backref('pages', lazy='dynamic'),
     )
     payload = db.Column(db.Text, nullable=False)
+    html_payload = db.Column(db.Text, nullable=False)
     username = db.Column(db.String(80), db.ForeignKey('user.username'), nullable=False)
 
     @classmethod
@@ -382,7 +386,7 @@ class BlogEntry(db.Model):
         # now there is a tag - so we must remove the untagged tag
         # if it is set.
         untagged = Tag.query.filter_by(name='Untagged').one()
-        if untagged in self.tags:
+        if untagged in self.tags and len(self.tags) > 1:
             self.tags.remove(untagged)
 
     def removeTag(self, name):
