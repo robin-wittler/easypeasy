@@ -26,7 +26,7 @@
             <div id="blog_header">
                 <p id="blog_tags">Tags:&nbsp;
                     {%- for tag in blog.tags %}
-                    <a id="blog_tags" href="/blog/by/tag/{{ tag|e }}/">{{ tag|e }}</a>
+                    <a id="blog_tags" href="/blog/by/tag/{{ tag|e }}">{{ tag|e }}</a>
                         {%- if tag != blog.tags|last -%}
                             {%- if blog.tags_delim -%}
                                 {{ blog.tags_delim }}
