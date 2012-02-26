@@ -18,3 +18,6 @@ blog_name = 'Alsobs.de'
 
 # the blog subtitle
 blog_subtitle = 'Die tun nur so als ob!'
+
+# how many blog entries per page?
+max_entries_per_page = 2

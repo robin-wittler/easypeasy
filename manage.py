@@ -123,7 +123,7 @@ class AddEntry(argparse.Action):
         if not tags == 'NONE':
             tags = tag_splitter.split(tags)
         else:
-            tags = []
+            tags = ['Untagged']
         ctx.push()
         entry = models.BlogEntry(name, content, user, tags=tags)
         models.db.session.add(entry)

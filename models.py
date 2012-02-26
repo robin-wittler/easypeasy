@@ -155,6 +155,10 @@ tags = db.Table(
     db.Column('blog_name', db.String(255), db.ForeignKey('blog_entry.name')),
 )
 
+def get_used_tags():
+    all_used_tags = db.session.query(tags).all()
+    return set(tag[0] for tag in all_used_tags)
+
 class BlogEntry(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(255), unique=True, nullable=False)
@@ -210,9 +214,21 @@ class BlogEntry(db.Model):
         return query.filter_by(username=username)
 
     @classmethod
+    def addBlogIdFilter(cls, query, blog_id):
+        return query.filter_by(id=blog_id)
+
+    @classmethod
     def addTagFilter(cls, query, tag):
         tag = Tag.query.filter_by(name=tag).one()
         return query.filter(cls.tags.contains(tag))
+
+    @classmethod
+    def addNameFilter(cls, query, name):
+        return query.filter_by(name=name)
+
+    @classmethod
+    def addHeadlineFilter(cls, query, headline):
+        return query.filter_by(headline=headline)
 
     @classmethod
     def addCreationYearFilter(cls, query, year):
@@ -382,6 +398,9 @@ class BlogEntry(db.Model):
         return cleaner.clean_html(html)
 
     def addTag(self, name):
+        if not name:
+            name = 'Untagged'
+
         try:
             tag = Tag.query.filter_by(name=name).one()
         except NoResultFound:
@@ -407,6 +426,9 @@ class BlogEntry(db.Model):
         except NoResultFound:
             # hmm, should we do something here?
             pass
+
+    def updateModifiedDate(self):
+        self.modified_date = datetime.datetime.now()
         
 
 class Tag(db.Model):

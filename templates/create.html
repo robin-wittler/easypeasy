@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import 'forms.html' as forms %}
+
+{% if g.title %}
+    {%- block title -%}
+    {{ g.title }}
+    {%- endblock -%}
+{% endif %}
+
+{%- block stylesheet -%}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/create.css" />
+{%- endblock %}
+
+
+
+{%- block content -%}
+{% block left_sidebar %}
+{% include "left_sidebar.html" %}
+{% endblock %}
+        <div id="create">
+            <form name="create" id="create" method="POST" action="/blog/create">
+                <span id="create">
+                    <label>Name:</label><span id="create">{{ forms.input('name') }}</span>
+                    <label>Headline:</label><span id="create">{{ forms.input('headline') }}</span>                    
+                    <label>Tags:</label><span id="edit">{{ forms.input('tags') }}</span>                    
+                </span>
+                <p id="textform">{{ forms.textarea('payload') }}</p>
+                <input type="submit" value="Create">
+            </form>
+        </div>
+{% endblock %}
+

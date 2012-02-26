@@ -41,7 +41,7 @@
                 <span id="blog_payload">{{ blog.html_payload|safe }}</span>
             </div>
             <div id="blog_footer">
-                <a id="blog_edit" href="/edit/{{ blog.name|e }}">edit</a>
+                <a id="blog_edit" href="/blog/edit/{{ blog.id|e }}">edit</a>
                 <span id="blog_footer_delim">&nbsp;|&nbsp;</span>
                 <span id="blog_published_by">published by</span>
                 <span id="blog_username">{{ blog.username|e }}</span>

@@ -1,9 +1,16 @@
+{% if g.left_sidebar %}
         <div id="left_sidebar">
             <div id="left_sidebar_box">
-                    <h1 id="left_sidebar_header">Tags</h1>
-                    {% for tag in g.Tag.query.all() %}
-                    <a id="left_sidebar_entry" href="/blog/by/tag/{{ tag.name }}">{{ tag.name }}</a>
-                    {% endfor %}
-                    <a id="left_sidebar_entry" href="/blog">all</a>
+                <h1 id="left_sidebar_header">Tags</h1>
+                {% for tag in g.tags %}
+                <a id="left_sidebar_entry" href="/blog/by/tag/{{ tag }}">{{ tag }}</a>
+                {% endfor %}
+                <a id="left_sidebar_entry" href="/blog">all</a>
             </div>
+            <div id="left_sidebar_box">
+                <h1 id="left_sidebar_header">Manage</h1>
+                <a id="left_sidebar_entry" href="/blog/new">New Entry</a>
+                <a id="left_sidebar_entry" href="/login">Login</a>
+            </div>                
         </div>
+{% endif %}

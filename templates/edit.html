@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% import 'forms.html' as forms %}
+
+{% if g.title %}
+    {%- block title -%}
+    {{ g.title }}
+    {%- endblock -%}
+{% endif %}
+
+{%- block stylesheet -%}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/edit.css" />
+{%- endblock %}
+
+
+
+{%- block content -%}
+{% block left_sidebar %}
+{% include "left_sidebar.html" %}
+{% endblock %}
+        <div id="edit">
+            <form name="edit" id="edit" method="POST" action="/blog/update/{{g.blog_entry.id}}">
+                <span id="edit">
+                    <label>Name:</label><span id="name">{{ g.blog_entry.name|e }}</span>
+                    <label>Headline:</label><span id="edit">{{ forms.input('headline', value=g.blog_entry.headline|e) }}</span>                    
+                    <label>Tags:</label><span id="edit">{{ forms.input('tags', value=g.blog_entry.tags|join(', ')|e) }}</span>                    
+                </span>
+                <p id="textform">{{ forms.textarea('payload', value=g.blog_entry.payload) }}</p>
+                <input type="submit" value="Update">
+            </form>
+        </div>
+{% endblock %}
+
