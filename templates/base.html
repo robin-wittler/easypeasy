@@ -4,18 +4,18 @@
 <head>
     {%- block head %}
     {% block stylesheet %}<link rel="stylesheet" href="/static/base.css" />{% endblock %}
-    <title>{% block title %}{% endblock %}  :: Alsobs.de ::</title>
+    <title>{% block title %}{% endblock %} ::{{ g.blog_name }}::</title>
     {%- endblock %}
 </head>
 <body id="body">
     <div id="header">
         {%- block header %}
-        <h1 id="header">Alsobs.de</h1>
+        <h1 id="header">{{ g.blog_name }}</h1>
         {%- endblock %}
     </div>
     <div id="subheader">
         {%- block subheader %}
-        <p id="subheader">Die tun nur so als ob!</p>
+        <p id="subheader">{{ g.blog_subtitle }}</p>
         {%- endblock %}
     </div>
     <div id="content">
@@ -26,7 +26,7 @@
     </div>
     <div id="footer">
         {%- block footer %}
-        <p id="footer">&copy; Copyright 2012 by <a id="footer" href="https://alsobs.de/copyright">Alsobs.de</a>.</p>
+        <p id="footer">&copy; Copyright by <a id="footer" href="/copyright">{{ g.blog_name }}</a>.</p>
         {%- endblock %}
     </div>
 </body>

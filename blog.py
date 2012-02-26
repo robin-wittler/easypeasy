@@ -65,13 +65,35 @@ def index(*args, **kwargs):
 
 @app.route('/blog/', methods=['POST', 'GET'])
 @app.route('/blog/page/<int:page>', methods=['POST', 'GET'])
+def blog(page=None):
+    
+    if page is None:
+        page = 1
+
+    query = BlogEntry.getAll()
+    query = query.paginate(page, per_page=max_per_page)
+
+    if 'page' in request.path:
+        endpoint = request.path.rsplit('/', 1)[0]
+    else:
+        endpoint = os.path.join(request.path, 'page')
+
+    g.paginate = query
+    g.left_sidebar = True
+    g.endpoint = endpoint
+    g.blog_name = config.blog_name
+    g.title = 'Blog for'
+    g.blog_subtitle = config.blog_subtitle
+    g.Tag = Tag
+    return render_template('child.html', g=g)
+
 @app.route('/blog/by/date/<int:year>', methods=['POST', 'GET'])
 @app.route('/blog/by/date/<int:year>/page/<int:page>', methods=['POST', 'GET'])
 @app.route('/blog/by/date/<int:year>/<int:month>', methods=['POST', 'GET'])
 @app.route('/blog/by/date/<int:year>/<int:month>/page/<int:page>', methods=['POST', 'GET'])
 @app.route('/blog/by/date/<int:year>/<int:month>/<int:day>', methods=['POST', 'GET'])
 @app.route('/blog/by/date/<int:year>/<int:month>/<int:day>/page/<int:page>', methods=['POST', 'GET'])
-def blog(year=None, month=None, day=None, page=None):
+def blog_by_date(year=None, month=None, day=None, page=None):
 
     if page is None:
         page = 1
@@ -100,18 +122,41 @@ def blog(year=None, month=None, day=None, page=None):
     g.BlogEntry = BlogEntry
     g.left_sidebar = True
     g.Tag = Tag
-    g.User = User
-    g.Group = Group
-    g.year = year
-    g.month = month
-    g.day = day
     g.endpoint = endpoint
+    g.blog_name = config.blog_name
     bf = 'Blog for'
     if year is not None:
         what = '/'.join(map(lambda x: str(x), filter(None, (g.year, g.month, g.day))))
     else:
         what = ''
     g.title = '%s %s' %(bf, what)
+    g.blog_subtitle = config.blog_subtitle
+    return render_template('child.html', g=g)
+
+
+@app.route('/blog/by/tag/<tag>', methods=['POST', 'GET'])
+@app.route('/blog/by/tag/<tag>/page/<int:page>', methods=['POST', 'GET'])
+def blog_by_tag(tag, page=None):
+    
+    if page is None:
+        page = 1
+
+    query = BlogEntry.getAll()
+    query = BlogEntry.addTagFilter(query, tag)
+    query = query.paginate(page, per_page=max_per_page)
+
+    if 'page' in request.path:
+        endpoint = request.path.rsplit('/', 1)[0]
+    else:
+        endpoint = os.path.join(request.path, 'page')
+
+    g.paginate = query
+    g.left_sidebar = True
+    g.endpoint = endpoint
+    g.blog_name = config.blog_name
+    g.title = 'Blog for %s' %(tag)
+    g.blog_subtitle = config.blog_subtitle
+    g.Tag = Tag
     return render_template('child.html', g=g)
 
 @app.route('/login', methods=['POST', 'GET'])

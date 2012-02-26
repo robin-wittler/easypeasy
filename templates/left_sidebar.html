@@ -2,19 +2,8 @@
             <div id="left_sidebar_box">
                     <h1 id="left_sidebar_header">Tags</h1>
                     {% for tag in g.Tag.query.all() %}
-                        <p id="left_sidebar_entry">{{ tag.name }}</p>
+                    <a id="left_sidebar_entry" href="/blog/by/tag/{{ tag.name }}">{{ tag.name }}</a>
                     {% endfor %}
-            </div>
-            <div id="left_sidebar_box">
-                <h1 id="left_sidebar_header">Tags</h1>
-                {% for tag in g.Tag.query.all() %}
-                    <p id="left_sidebar_entry">{{ tag.name }}</p>
-                {% endfor %}
-            </div>
-            <div id="left_sidebar_box">
-                <h1 id="left_sidebar_header">Tags</h1>
-                {% for tag in g.Tag.query.all() %}
-                    <p id="left_sidebar_entry">{{ tag.name }}</p>
-                {% endfor %}
+                    <a id="left_sidebar_entry" href="/blog">all</a>
             </div>
         </div>
