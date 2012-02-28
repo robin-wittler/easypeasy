@@ -64,7 +64,7 @@ def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
         if session.get('username', None) is None:
-            return redirect(url_for('login', next=request.url))
+            return redirect(url_for('blog_login', next=request.url))
         return f(*args, **kwargs)
     return decorated_function
 
@@ -304,10 +304,10 @@ def blog_create():
 
     return redirect('/blog/by/id/%s' %(blog_entry.id))
 
-@app.route('/login', methods=['POST', 'GET'])
-@app.route('/login/', methods=['POST', 'GET'])
-@app.route('/login/<username>', methods=['POST', 'GET'])
-def login(username=None):
+@app.route('/blog/login', methods=['POST', 'GET'])
+@app.route('/blog/login/', methods=['POST', 'GET'])
+@app.route('/blog/login/<username>', methods=['POST', 'GET'])
+def blog_login(username=None):
     if request.method == 'GET':
         next = request.args.get('next', '')
         return render_template('login2.html', username=username, next=next)
