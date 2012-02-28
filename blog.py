@@ -89,7 +89,6 @@ def blog(page=None):
 
     g.session = session
     g.paginate = query
-    g.left_sidebar = True
     g.endpoint = endpoint
     g.blog_name = config.blog_name
     g.title = 'Blog for'
@@ -131,7 +130,6 @@ def blog_by_date(year=None, month=None, day=None, page=None):
     g.session = session
     g.paginate = query
     g.BlogEntry = BlogEntry
-    g.left_sidebar = True
     g.tags = get_used_tags()
     g.endpoint = endpoint
     g.blog_name = config.blog_name
@@ -151,7 +149,7 @@ def blog_by_tag(tag, page=None):
     
     if page is None:
         page = 1
-
+    
     query = BlogEntry.getAll()
     query = BlogEntry.addTagFilter(query, tag)
     query = query.paginate(page, per_page=max_per_page)
@@ -163,7 +161,6 @@ def blog_by_tag(tag, page=None):
 
     g.session = session
     g.paginate = query
-    g.left_sidebar = True
     g.endpoint = endpoint
     g.blog_name = config.blog_name
     g.title = 'Blog for %s' %(tag)
@@ -185,7 +182,6 @@ def blog_by_id(blog_id):
 
     g.session = session
     g.paginate = query
-    g.left_sidebar = True
     g.endpoint = endpoint
     g.blog_name = config.blog_name
     g.title = '%s' %(g.paginate.items[0].name)
@@ -207,7 +203,6 @@ def blog_by_name(name):
 
     g.session = session
     g.paginate = query
-    g.left_sidebar = True
     g.endpoint = endpoint
     g.blog_name = config.blog_name
     g.title = '%s' %(g.paginate.items[0].name)
@@ -225,8 +220,8 @@ def blog_edit(blog_id):
     if not query.one().username == session['username']:
         return abort(401)
 
+    g.session = session
     g.blog_entry = query.one()
-    g.left_sidebar = False
     g.blog_name = config.blog_name
     g.blog_subtitle = config.blog_subtitle
     g.title = 'Edit entry: %s' %(g.blog_entry.name)
@@ -263,7 +258,7 @@ def blog_update(blog_id):
         str_new_tags = 'Untagged'
 
     for tag in str_new_tags.split(','):
-        new_tags.add(tag)
+        new_tags.add(tag.rstrip().lstrip())
 
     old_tags = set(t.name for t in blog_entry.tags)
     if new_tags != old_tags:
@@ -282,7 +277,7 @@ def blog_update(blog_id):
 @app.route('/blog/new', methods=['POST', 'GET'])
 @login_required
 def blog_new():
-    g.left_sidebar = False
+    g.session = session
     g.blog_name = config.blog_name
     g.blog_subtitle = config.blog_subtitle
     g.title = 'Make a new Entry for'

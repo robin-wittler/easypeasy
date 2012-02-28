@@ -1,20 +1,20 @@
-{% if g.left_sidebar %}
+{% block left_sidebar %}
         <div id="left_sidebar">
             <div id="left_sidebar_box">
                 <h1 id="left_sidebar_header">Tags</h1>
-                {% for tag in g.tags %}
+                {% for tag in g.tags -%}
                 <a id="left_sidebar_entry" href="/blog/by/tag/{{ tag }}">{{ tag }}</a>
-                {% endfor %}
+                {% endfor -%}
                 <a id="left_sidebar_entry" href="/blog">all</a>
             </div>
             <div id="left_sidebar_box">
                 <h1 id="left_sidebar_header">Manage</h1>
                 <a id="left_sidebar_entry" href="/blog/new">New Entry</a>
-                {% if g.session.get('username', '') %}
+                {% if g.session.get('username', '') -%}
                 <span id="lef_sidebar_entry"><a id="left_sidebar_entry" href="/blog/logout/{{g.session.get('username') }}">Logout</a> (Logged in as {{ g.session.get('username') }}) </span>
-                {% else %}
+                {%- else -%}
                 <a id="left_sidebar_entry" href="/blog/login">Login</a>
-                {% endif %}
+                {%- endif %}
             </div>                
         </div>
-{% endif %}
+{% endblock %}

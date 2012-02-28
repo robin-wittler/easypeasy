@@ -15,9 +15,6 @@
 
 
 {%- block content -%}
-{% block left_sidebar %}
-{% include "left_sidebar.html" %}
-{% endblock %}
         <div id="edit">
             <form name="edit" id="edit" method="POST" action="/blog/update/{{g.blog_entry.id}}">
                 <span id="edit">

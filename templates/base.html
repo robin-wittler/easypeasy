@@ -18,10 +18,14 @@
         <p id="subheader">{{ g.blog_subtitle }}</p>
         {%- endblock %}
     </div>
-    <div id="content">
+    {%- block left_sidebar -%}
+    {%- include "left_sidebar.html" ignore missing -%}        
+    {%- endblock -%}
+    {%- block right_sidebar -%}
+    {%- include "right_sidebar.html" ignore missing -%}        
+    {%- endblock %}
+     <div id="content">
         {%- block content %}
-        {% block left_sidebar %}
-        {% endblock %}
         {%- endblock %}
     </div>
     <div id="footer">
