@@ -10,7 +10,11 @@
             <div id="left_sidebar_box">
                 <h1 id="left_sidebar_header">Manage</h1>
                 <a id="left_sidebar_entry" href="/blog/new">New Entry</a>
+                {% if g.session.get('username', '') %}
+                <span id="lef_sidebar_entry"><a id="left_sidebar_entry" href="/blog/logout/{{g.session.get('username') }}">Logout</a> (Logged in as {{ g.session.get('username') }}) </span>
+                {% else %}
                 <a id="left_sidebar_entry" href="/blog/login">Login</a>
+                {% endif %}
             </div>                
         </div>
 {% endif %}

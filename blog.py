@@ -87,6 +87,7 @@ def blog(page=None):
     else:
         endpoint = os.path.join(request.path, 'page')
 
+    g.session = session
     g.paginate = query
     g.left_sidebar = True
     g.endpoint = endpoint
@@ -127,6 +128,7 @@ def blog_by_date(year=None, month=None, day=None, page=None):
         endpoint = os.path.join(request.path, 'page')
 
 
+    g.session = session
     g.paginate = query
     g.BlogEntry = BlogEntry
     g.left_sidebar = True
@@ -159,6 +161,7 @@ def blog_by_tag(tag, page=None):
     else:
         endpoint = os.path.join(request.path, 'page')
 
+    g.session = session
     g.paginate = query
     g.left_sidebar = True
     g.endpoint = endpoint
@@ -180,6 +183,7 @@ def blog_by_id(blog_id):
     else:
         endpoint = os.path.join(request.path, 'page')
 
+    g.session = session
     g.paginate = query
     g.left_sidebar = True
     g.endpoint = endpoint
@@ -201,6 +205,7 @@ def blog_by_name(name):
     else:
         endpoint = os.path.join(request.path, 'page')
 
+    g.session = session
     g.paginate = query
     g.left_sidebar = True
     g.endpoint = endpoint
@@ -342,7 +347,16 @@ def blog_login(username=None):
                 return redirect(next)
             return redirect(url_for('blog'))
 
+@app.route('/blog/logout/<username>', methods=['POST', 'GET'])
+@app.route('/blog/logout/<username>/', methods=['POST', 'GET'])
+def blog_logout(username):
+    if username == session['username']:
+        del session['username']
+        del session['ip']
 
+    if request.referrer:
+        return redirect(request.referrer)
+    return redirect(url_for('blog'))
 
 if __name__ == '__main__':
     app.run()
